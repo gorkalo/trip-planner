@@ -34,10 +34,13 @@ const swaggerOptions = {
     ],
     servers: [
       {
-        url: `http://localhost:${process.env.PORT || 8000}`,
-      },
-      {
-        url: 'https://bizaway-5f872b759a4f.herokuapp.com',
+        url: `http://localhost:{port}`,
+        variables: {
+          port: {
+            default: process.env.PORT || 8000,
+            description: 'Localhost port for development',
+          },
+        },
       }
     ],
   },
