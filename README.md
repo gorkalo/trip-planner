@@ -140,7 +140,7 @@ Testing with Swagger is easy and allows you to experiment with all the available
 Contributions to the project are always welcome! If you want to contribute, please follow these steps:
 
 1. **Fork the repository**: Create your own fork of this repository.
-2. **Create a branch**: For each new feature or bug fix, create a new branch from `main`:
+2. **Create a branch**: For each new feature or bug fix, create a new branch from `master`:
 
    ```bash
    git checkout -b feature-branch
@@ -160,8 +160,6 @@ Contributions to the project are always welcome! If you want to contribute, plea
    ```
 
 6. **Open a pull request**: Go to the original repository and open a pull request with a description of your changes.
-
-We will review your changes and, if everything looks good, merge them into the main codebase.
 
 ---
 
