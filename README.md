@@ -185,6 +185,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
   const cors = require('cors');
   app.use(cors());
   ```
----
-
-This `README.md` provides all the necessary instructions to get started, run, test, and contribute to the Express API with Swagger. It should help developers quickly understand how to set up and work with the API.
