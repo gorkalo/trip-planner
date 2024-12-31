@@ -17,7 +17,6 @@ This project is an Express.js-based RESTful API for trip planification
 - [Testing with Swagger](#testing-with-swagger)
 - [Contributing](#contributing)
 - [License](#license)
-- [Additional Notes](#additional-notes)
 
 ---
 
@@ -166,20 +165,3 @@ Contributions to the project are always welcome! If you want to contribute, plea
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
-
----
-
-## Additional Notes
-
-- **Cross-Origin Resource Sharing (CORS)**: If you plan to use the API with a frontend application hosted on a different domain, ensure that CORS is properly configured. You can use the `cors` package to enable CORS.
-  
-  Example:
-  ```bash
-  npm install cors
-  ```
-
-  And in your Express app:
-  ```js
-  const cors = require('cors');
-  app.use(cors());
-  ```
