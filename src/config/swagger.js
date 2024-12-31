@@ -36,6 +36,9 @@ const swaggerOptions = {
       {
         url: `http://localhost:${process.env.PORT || 8000}`,
       },
+      {
+        url: 'https://bizaway-5f872b759a4f.herokuapp.com',
+      }
     ],
   },
   apis: ['./src/routes/*.js', './src/swagger/*.js'],

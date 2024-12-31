@@ -117,7 +117,7 @@ This will load Swagger UI, where you can see and interact with all available API
 
 Swagger UI provides a convenient way to test the API without writing any code. Here's how to test the API:
 
-1. **Open Swagger UI**: Go to `http://localhost:3000/docs` in your browser.
+1. **Open Swagger UI**: Go to `http://localhost:8000/docs` in your browser.
 2. **Select an endpoint**: Find the endpoint you want to test.
 3. **Fill in parameters**: For endpoints that require parameters or request bodies, use the **"Try it out"** button to input the necessary data.
 4. **Authentication (if required)**:
