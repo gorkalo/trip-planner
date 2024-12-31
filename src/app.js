@@ -6,6 +6,7 @@ const path = require('path');
 const swaggerOptions = require('./config/swagger');
 const { AVAILABLE_COUNTRY_CODES, SORT_BY_OPTIONS } = require('./config/constants');
 const errorHandler = require('./middlewares/error');
+const cors = require('cors');
 
 const app = express();
 
@@ -29,5 +30,7 @@ fs.readdirSync(path.join(__dirname, 'routes')).forEach(file => {
 app.use((err, req, res, next) => {
   errorHandler(err, res);
 });
+
+app.use(cors());
 
 module.exports = app;
