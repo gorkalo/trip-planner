@@ -2,7 +2,7 @@
  * @swagger
  * tags:
  *   - name: Auth
- *     description: Authentication routes
+ *     description: Endpoints for user authentication
  * /api/signup:
  *   post:
  *     summary: Returns the created user email and auth token

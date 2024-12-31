@@ -3,7 +3,7 @@ const client = require('../prisma/client');
 
 jest.mock('../prisma/client', () => ({
   trip: {
-    deleteMany: jest.fn()
+    delete: jest.fn()
   }
 }));
 
@@ -47,19 +47,19 @@ describe('deleteTrip', () => {
   });
 
   it('should return 200 and successfully delete the trip if trip is found', async () => {
-    client.trip.deleteMany.mockResolvedValueOnce({ count: 1 });
+    client.trip.delete.mockResolvedValueOnce({ count: 1 });
 
     await deleteTrip(req, res, next);
 
-    expect(client.trip.deleteMany).toHaveBeenCalledWith({
-      where: { userId: 1, trip_id: '12345' }
+    expect(client.trip.delete).toHaveBeenCalledWith({
+      where: { userId_trip_id: { userId: 1, trip_id: '12345' } }
     });
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ message: 'Trip deleted successfully', trip_id: '12345' });
   });
 
   it('should return 404 if no trips were deleted', async () => {
-    client.trip.deleteMany.mockResolvedValueOnce({ count: 0 });
+    client.trip.delete.mockResolvedValueOnce({ count: 0 });
 
     await deleteTrip(req, res, next);
 
@@ -69,11 +69,12 @@ describe('deleteTrip', () => {
 
   it('should return 500 if an error occurs during the process', async () => {
     const error = new Error('Something went wrong');
-    client.trip.deleteMany.mockRejectedValueOnce(error);
+    client.trip.delete.mockRejectedValueOnce(error);
 
     await deleteTrip(req, res, next);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Something went wrong' });
+    
+    expect(next).toHaveBeenCalledWith(expect.objectContaining({
+      message: 'Something went wrong'
+    }));
   });
 });

@@ -30,10 +30,12 @@ model Trip {
   cost          Float
   duration      Float
   type          String
-  trip_id       String   @unique
+  trip_id       String
   display_name  String
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
   userId        Int
   user          User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, trip_id]) // Composite unique constraint
 }

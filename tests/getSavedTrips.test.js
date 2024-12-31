@@ -52,13 +52,13 @@ describe('getSavedTrips', () => {
     expect(res.json).toHaveBeenCalledWith(trips);
   });
 
-  it('should return 200 with an empty array if no trips are found', async () => {
+  it('should return 404 with an no saved trips are found message', async () => {
     client.trip.findMany.mockResolvedValueOnce([]);
 
     await getSavedTrips(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith([]);
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ message: 'No saved trips found' });
   });
 
   it('should return 500 if an error occurs during the process', async () => {
@@ -67,7 +67,9 @@ describe('getSavedTrips', () => {
 
     await getSavedTrips(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Something went wrong' });
+    expect(next).toHaveBeenCalledWith(expect.objectContaining({
+      message: 'Something went wrong'
+    }));
+
   });
 });

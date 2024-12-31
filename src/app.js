@@ -3,55 +3,12 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const fs = require('fs');
 const path = require('path');
-const { AVAILABLE_COUNTRY_CODES, SORT_BY_OPTIONS } = require('./constants');
+const swaggerOptions = require('./config/swagger');
+const { AVAILABLE_COUNTRY_CODES, SORT_BY_OPTIONS } = require('./config/constants');
+const errorHandler = require('./middlewares/error');
 
 const app = express();
-const PORT = process.env.PORT || 8000;
 
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    tags: [
-      {
-        name: 'Status',
-        description: 'Endpoint for status checking',
-      },
-      {
-        name: 'Trips',
-        description: 'Endpoints for trip planning',
-      },
-      {
-        name: 'Authentication',
-        description: 'Endpoints for user authentication',
-      },
-    ],
-    info: {
-      title: 'Bizaway Trip Planner API',
-      version: '1.0.0',
-      description: 'Trip planner API documentation',
-    },
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-        },
-      },
-    },
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
-    servers: [
-      {
-        url: `http://localhost:${PORT}`,
-      },
-    ],
-  },
-  apis: ['./src/routes/*.js', './src/swagger/*.js'],
-};
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 const dynamicSwaggerSpec = JSON.parse(JSON.stringify(swaggerSpec));
@@ -67,6 +24,10 @@ fs.readdirSync(path.join(__dirname, 'routes')).forEach(file => {
     const route = require(path.join(__dirname, 'routes', file));
     app.use('/api', route);
   }
+});
+
+app.use((err, req, res, next) => {
+  errorHandler(err, res);
 });
 
 module.exports = app;

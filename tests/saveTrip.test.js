@@ -6,7 +6,8 @@ const client = require('../prisma/client');
 jest.mock('axios');
 jest.mock('../prisma/client', () => ({
   trip: {
-    create: jest.fn()
+    create: jest.fn(),
+    findUnique: jest.fn(),
   }
 }));
 
@@ -58,6 +59,15 @@ describe('saveTrip', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'Trip not found' });
   });
 
+  it('should return 400 if trip is already saved', async () => {
+    client.trip.findUnique.mockResolvedValueOnce({});
+
+    await saveTrip(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Trip already saved' });
+  });
+
   it('should return 200 and save the trip if data is found', async () => {
     const tripData = { id: '1', name: 'Test Trip', description: 'A sample trip' };
     axios.get.mockResolvedValueOnce({ data: tripData });
@@ -90,7 +100,9 @@ describe('saveTrip', () => {
 
     await saveTrip(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Something went wrong' });
+    expect(next).toHaveBeenCalledWith(expect.objectContaining({
+      message: 'Something went wrong'
+    }));
+
   });
 });

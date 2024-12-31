@@ -5,7 +5,7 @@ const authenticate = require('../middlewares/auth');
 require('../swagger/trip');
 
 router.get(
-  '/trip', 
+  '/trip',
   tripController.getTrip
 );
 

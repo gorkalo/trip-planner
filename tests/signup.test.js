@@ -109,7 +109,9 @@ describe('signup', () => {
 
     await signup(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Something went wrong' });
+    expect(next).toHaveBeenCalledWith(expect.objectContaining({
+      message: 'Something went wrong'
+    }));
+    
   });
 });

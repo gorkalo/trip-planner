@@ -1,5 +1,6 @@
+require('dotenv').config();
 const axios = require('axios');
-const { AVAILABLE_COUNTRY_CODES, SORT_BY_OPTIONS } = require("../constants");
+const { AVAILABLE_COUNTRY_CODES, SORT_BY_OPTIONS } = require("../config/constants");
 const client = require('../../prisma/client');
 
 exports.getTrip = async (req, res, next) => {
@@ -42,7 +43,7 @@ exports.getTrip = async (req, res, next) => {
 
     return res.status(200).json(sortedTrips)
   } catch (err) {
-    return res.status(err?.status || 500).json({ error: err?.message || 'Something went wrong' })
+    next(err);
   }
 };
 
@@ -59,6 +60,19 @@ exports.saveTrip = async (req, res, next) => {
       return res.status(400).json({ error: 'Trip ID is required' })
     }
 
+    const trip = await client.trip.findUnique({
+      where: {
+        userId_trip_id: {
+          userId: user.id,
+          trip_id,
+        },
+      },
+    });
+
+    if (trip) {
+      return res.status(400).json({ error: 'Trip already saved' })
+    }
+
     const response = await axios.get(
       'https://z0qw1e7jpd.execute-api.eu-west-1.amazonaws.com/default/trips', 
         {
@@ -70,7 +84,7 @@ exports.saveTrip = async (req, res, next) => {
           }
         }
     );
-    const data = response.data;
+    const data = response?.data;
 
     if (!data) {
       return res.status(404).json({ error: 'Trip not found' })
@@ -87,7 +101,7 @@ exports.saveTrip = async (req, res, next) => {
     
     return res.status(200).json({ message: 'Trip saved successfully', trip_id })
   } catch (err) {
-    return res.status(err?.status || 500).json({ error: err?.message || 'Something went wrong' })
+    next(err);
   }
 };
 
@@ -102,11 +116,16 @@ exports.getSavedTrips = async (req, res, next) => {
         userId: user.id
       }
     });
+
+    if (trips.length === 0) {
+      return res.status(404).json({ message: 'No saved trips found' })
+    }
+
     return res.status(200).json(trips)
   } catch (err) {
-    return res.status(err?.status || 500).json({ error: err?.message || 'Something went wrong' })
+    next(err);
   }
-}
+};
 
 exports.deleteTrip = async (req, res, next) => {
   try {
@@ -118,11 +137,14 @@ exports.deleteTrip = async (req, res, next) => {
     if (!trip_id) {
       return res.status(400).json({ error: 'Trip ID is required' })
     }
-    const trip = await client.trip.deleteMany({
+
+    const trip = await client.trip.delete({
       where: {
-        userId: user.id,
-        trip_id
-      }
+        userId_trip_id: {
+          userId: user.id,
+          trip_id,
+        },
+      },
     });
 
     if (trip.count === 0) {
@@ -131,6 +153,6 @@ exports.deleteTrip = async (req, res, next) => {
 
     return res.status(200).json({ message: 'Trip deleted successfully', trip_id })
   } catch (err) {
-    return res.status(err?.status || 500).json({ error: err?.message || 'Something went wrong' })
+    next(err);
   }
-}
+};

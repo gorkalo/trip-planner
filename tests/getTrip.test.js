@@ -1,16 +1,19 @@
 require('dotenv').config();
 const request = require('supertest');
 const axios = require('axios');
-const express = require('express');
 const { getTrip } = require('../src/controllers/trip');
 const axiosMockAdapter = require('axios-mock-adapter');
-const app = express();
-
+const app = require('../src/app');
+const errorHandler = require('../src/middlewares/error');
 app.get('/trip', getTrip);
+app.use((err, req, res, next) => {
+  errorHandler(err, res);
+});
 
 const mockAxios = new axiosMockAdapter(axios);
 
 describe('GET /trip', () => {
+  
   afterEach(() => {
     mockAxios.reset();
   });
@@ -94,6 +97,6 @@ describe('GET /trip', () => {
       .set('x-api-key', process.env.TRIPS_API_KEY);
 
     expect(response.status).toBe(500);
-    expect(response.body).toEqual({ error: 'Request failed with status code 500' });
+    expect(response.body.error).toEqual('Request failed with status code 500');
   });
 });

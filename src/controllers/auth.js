@@ -2,7 +2,7 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const prisma = require('../../prisma/client');
 const jwt = require('jsonwebtoken');
-const { validateEmail } = require('../utils');
+const { validateEmail } = require('../config/utils');
 
 exports.signup = async (req, res, next) => {
   try {
@@ -35,7 +35,7 @@ exports.signup = async (req, res, next) => {
     return res.status(200).json({ email: user.email, token: token });
 
   } catch (err) {
-    return res.status(err?.status || 500).json({ error: err?.message || 'Something went wrong' });
+    next(err);
   }
 };
 
@@ -65,6 +65,6 @@ exports.login = async (req, res, next) => {
     return res.status(200).json(token);
 
   } catch (err) {
-    return res.status(err?.status || 500).json({ error: err?.message || 'Something went wrong' });
+    next(err);
   }
 };
